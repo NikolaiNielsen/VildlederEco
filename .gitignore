@@ -1,0 +1,21 @@
+.ipynb_checkpoints
+/__pycache__/*
+
+# No zip files
+*.zip
+
+# No compiled python files
+*.pyc
+
+# No swap files
+*.swp
+
+# Dont upload credentials or token!
+token.pickle
+credentials.json
+
+# I don't need people to actually know my expenses
+Expenses.txt
+
+# Quickstart.py is nice to have, but not needed in repo
+quickstart.py
