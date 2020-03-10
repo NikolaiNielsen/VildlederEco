@@ -10,8 +10,10 @@ from google.auth.transport.requests import Request
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 SHEET_ID = '1XgJCDX78jg_ib_wBJUsKxRkUxmgbQ6_33l44BfRHJo0'
 INPUTOPTION = 'USER_ENTERED'
-RANGES = ['A4:H']
-RANGE = 'Tema!A4:H'
+RANGES = 'A4:H'
+NUM_COLS = 8
+SHEETS = ['Tema', 'Mad']
+RANGE = ["!".join((x, RANGES)) for x in SHEETS]
 
 
 def get_unique_el(elements, sort_by=(0, 1)):
@@ -56,7 +58,7 @@ def propagate_down(values, columnID):
 def prepare_sheet_results(values, cols=[0, 1, 5, 6, 7]):
     # Values are returned as a list of lists, each of which contain the cell contents.
     # Exclude empty rows - they correspond to empty lists.
-    values = [x for x in values if len(x) != 0]
+    values = [x for x in values if len(x) == NUM_COLS]
     # propagate down the category value
     values = propagate_down(values, 0)
     # Keep only certain columns.
@@ -66,11 +68,12 @@ def prepare_sheet_results(values, cols=[0, 1, 5, 6, 7]):
 
 def main():
     sheet = auth()
-    result = sheet.values().get(spreadsheetId=SHEET_ID,
-                                range=RANGE).execute()
-    values = result.get('values', [])
-    usable_values = prepare_sheet_results(values)
-    print (usable_values)
+    result = sheet.values().batchGet(spreadsheetId=SHEET_ID,
+                                ranges=RANGE).execute()
+    valueRange = result.get('valueRanges', [])
+    values = [Range.get('values', []) for Range in valueRange]
+    prepared_values = [prepare_sheet_results(x) for x in values]
+    print(prepared_values)
 
 
 if __name__ == '__main__':
