@@ -87,14 +87,14 @@ def process_data(sheet):
 
     # Create the dictionary template
     for name in unique_names:
-        vildleder[name] = {method: {"kvitteringer": [], "beloeb": 0}
+        vildleder[name] = {method: {"kvitteringer": [], "beloeb": Decimal(0)}
                            for method in PAYMENT_METHODS}
 
     # populate the dictionary
     for row in sheet:
         receipt, price, method, name = row
         method = PAYMENT_METHODS[int(method)]
-        vildleder[name][method]['beloeb'] += price
+        vildleder[name][method]['beloeb'] += round(Decimal(price), 2)
         vildleder[name][method]['kvitteringer'].append(receipt)
 
     return vildleder
