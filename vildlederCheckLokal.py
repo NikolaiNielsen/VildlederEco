@@ -1,6 +1,6 @@
 import openpyxl
 import pprint
-import pandas as pd
+from decimal import Decimal
 from operator import itemgetter
 
 # We both want to read and write to the spreadsheet
@@ -8,6 +8,7 @@ WORKBOOK_NAME = "ProperVildleder2019.xlsx"
 RANGES = 'A4:H'
 NUM_COLS = 8
 SHEETS = ['Tema', 'Mad']
+PAYMENT_METHODS = ["kontokort", "vejlederkort", "personlig"]
 
 
 def get_unique_el(elements, sort_by=(0, 1)):
@@ -61,7 +62,7 @@ def get_values_from_sheet(sheet):
     cells = sheet[f"{RANGES}{sheet.max_row}"]
 
     # Extract the raw values of each cell and store it in a list of lists
-    values = [[i.value for i in rows] for rows in cells]
+    values = [[i.internal_value for i in rows] for rows in cells]
 
     # prep the values and return the sheet
     prepped_values = prepare_sheet_results(values)
@@ -80,8 +81,6 @@ def process_data(sheet):
     # receipt numbers and price
     vildleder = {}
     names = []
-    methods = ["kontokort", "vejlederkort", "personlig"]
-
     # Get the names
     names = [row[-1] for row in sheet]
     unique_names = list(set(names))
@@ -89,12 +88,12 @@ def process_data(sheet):
     # Create the dictionary template
     for name in unique_names:
         vildleder[name] = {method: {"kvitteringer": [], "beloeb": 0}
-                           for method in methods}
+                           for method in PAYMENT_METHODS}
 
     # populate the dictionary
     for row in sheet:
         receipt, price, method, name = row
-        method = methods[int(method)]
+        method = PAYMENT_METHODS[int(method)]
         vildleder[name][method]['beloeb'] += price
         vildleder[name][method]['kvitteringer'].append(receipt)
 
@@ -103,9 +102,16 @@ def process_data(sheet):
 
 def main():
     wb = openpyxl.load_workbook(WORKBOOK_NAME)
-    sheet = wb['Mad']
-    values = get_values_from_sheet(sheet)
-    vildleder = process_data(values)
+
+    sheets = []
+    for name in SHEETS:
+        sheet = wb[name]
+        values = get_values_from_sheet(sheet)
+        sheets.append(values)
+
+    sheet = combine_sheets(sheets)
+
+    vildleder = process_data(sheet)
 
     pprint.pprint(vildleder)
 
