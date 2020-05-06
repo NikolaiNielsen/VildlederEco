@@ -12,6 +12,9 @@ Fremtidige forhåbninger:
 - Grafisk brugerflade til valg af fil
 
 BRUG AF DETTE PROGRAM
+- Programmet bruger pakker fra standardbiblioteket, samt "openpyxl", der skal
+  installeres separat, for eksempel gennem pip. Den er også inkluderet med
+  Anaconda distributionen.
 - For at benytte dette program skal du have en lokal kopi af regnskabet i
   xlsx-format. Du skal ændre "WORKBOOK_NAME" til den relative sti til
   regnearket. Hvis regnearket er i samme mappe som dette program, kan du bare
@@ -36,6 +39,17 @@ BRUG AF DETTE PROGRAM
                 svarende til positionen i PAYMENT_METHODS (så 0=kontokort, etc)
   - H: Navn - hvem har foretaget købet? Der skelnes mellem store og små
               bogstaver!
+- Det er egentlig kun kolonnerne A, B, F, G og H, der bliver brugt.
+- "RANGES" bør kun ændres, hvis layouttet af regnearket ændres. Ligeledes skal
+  "NUM_COLS" svare til hvor mange kolonner der skal læses fra (8, i dette
+  tilfælde, da der skal læses fra A til H).
+- Når disse ting er sørget for, skal programmet bare køres. Så bliver der
+  automatisk indlæst og oprettet et nyt ark, "Opsummering", hvor der står en
+  opsummering over, hvad hvert "navn" har købt, hvilke kvitteringer samt samlet
+  beløb for hver betallingsmulighed. Så kan man nemt se, hvis man har skrevet
+  et navn forkert, og hvor mange penge, hver person skal have tilbage gennem
+  REJS-ud, samt hvor mange penge, der skal tilbagebetales til vejlederkontoen
+  (i form af tilskud)
 """
 
 import openpyxl
