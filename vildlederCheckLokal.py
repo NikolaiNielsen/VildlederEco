@@ -65,18 +65,16 @@ RANGES = 'A4:H'
 NUM_COLS = 8
 
 
-def get_unique_el(elements, sort_by=(0, 1)):
-    """Returns a list of unique list, sorted by the
-    n'th element of the lists. sort_by supports tuples and ints.
-    """
-    uniques = [list(x) for x in set(tuple(x) for x in elements)]
-    sort = sorted(uniques, key=itemgetter(*sort_by))
-    return sort
-
-
 def propagate_down(values, columnID=0):
-    # Propagates the value of a given cell down through empty cells, in a given
-    # column
+    """
+    Propagates the value of a given sublist down through empty sublists, in a
+    given column. Ie, if the first entry of sublist 1 is "Mad", and the first
+    entry of sublist 2 is None, then this code propagates the "Mad" down
+    through the sublists, until it hits a non-None. Thus making sure that the
+    column is fully populated.
+
+    Assumes values is a list of lists.
+    """
     for i in range(len(values)-1):
         if values[i+1][columnID] is None:
             values[i+1][columnID] = values[i][columnID]
@@ -84,6 +82,11 @@ def propagate_down(values, columnID=0):
 
 
 def prepare_sheet_results(values, cols=[0, 1, 5, 6, 7]):
+    """
+    Takes the values of the sheet and prepares them for the summary.
+    Assumes values is a list of lists.
+    """
+
     # Values are returned as a list of lists, each of which contain the
     # cell contents. Default columns are
     # - Category
@@ -124,6 +127,10 @@ def get_values_from_sheet(sheet):
 
 
 def combine_sheets(sheet_lists):
+    """
+    Combines the sheets. Assumes sheet_lists is a list of sheets (which
+    themselves are a list of list)
+    """
     combined = []
     for sheet in sheet_lists:
         combined = combined + sheet
@@ -131,6 +138,10 @@ def combine_sheets(sheet_lists):
 
 
 def process_data(sheet):
+    """
+    Takes the prepared data and processes it into the format used in the
+    summary sheet.
+    """
     # The vildleder has the structure of vildleder -> name -> payment method ->
     # receipt numbers and price
     vildleder = {}
@@ -148,13 +159,20 @@ def process_data(sheet):
     for row in sheet:
         receipt, price, method, name = row
         method = PAYMENT_METHODS[int(method)]
-        vildleder[name][method]['beloeb'] += round(Decimal(price), 2)
+        # Round the amount to two decimals, and use Decimal. Probably an over
+        # cautious approac.
+        vildleder[name][method]['beløb'] += round(Decimal(price), 2)
         vildleder[name][method]['kvitteringer'].append(receipt)
 
     return vildleder
 
 
 def main():
+    """
+    Open workbook. Get values from each worksheet in SHEETS, and combine them
+    into one list. Process the data and create the summary sheet in the
+    workbook.
+    """
     wb = openpyxl.load_workbook(WORKBOOK_NAME)
 
     sheets = []
