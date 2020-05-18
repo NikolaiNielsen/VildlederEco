@@ -1,4 +1,4 @@
-#VildlederEco
+# VildlederEco
 
 Forfatter: Nikolai Nielsen (NikolaiNielsen@outlook.dk)
 Et script til at hjælpe med at gøre Vildlederøkonomien lidt nemmere:
@@ -6,13 +6,13 @@ Et script til at hjælpe med at gøre Vildlederøkonomien lidt nemmere:
   laver en oversigt over, hvad hver person har udlagt, under hvilken kategori,
   og med hvilken betalingsmetode.
 
-Fremtidige forhåbninger:
+### Fremtidige forhåbninger:
 - Automatisk genkendelse af, hvor de relevante data er, i hvert ark, så det er
   mere robust
 - Grafisk brugerflade for dataindtastning
 - Grafisk brugerflade til valg af fil
 
-BRUG AF DETTE PROGRAM
+### BRUG AF DETTE PROGRAM
 - Programmet bruger pakker fra standardbiblioteket, samt "openpyxl" (version
   3.0.0), der skal installeres separat, for eksempel gennem pip. Den er også
   inkluderet med Anaconda distributionen.
