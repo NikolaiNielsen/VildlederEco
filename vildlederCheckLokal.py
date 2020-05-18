@@ -152,7 +152,7 @@ def process_data(sheet):
 
     # Create the dictionary template
     for name in unique_names:
-        vildleder[name] = {method: {"kvitteringer": [], "beloeb": Decimal(0)}
+        vildleder[name] = {method: {"kvitteringer": [], "beløb": Decimal(0)}
                            for method in PAYMENT_METHODS}
 
     # populate the dictionary
@@ -165,6 +165,64 @@ def process_data(sheet):
         vildleder[name][method]['kvitteringer'].append(receipt)
 
     return vildleder
+
+
+def populate_sheet(vildleder, workbook):
+    """
+    Takes the processed data from dictionary and populates the sheet.
+    """
+    sheet_name = "Opsummering"
+
+    # Make sure the sheet is cleared
+    if sheet_name in workbook:
+        workbook.remove(workbook[sheet_name])
+
+    workbook.create_sheet(sheet_name, 2)
+    sheet = workbook[sheet_name]
+
+    name_row = 4
+    name_col = 2
+    method_offset = 1
+    price_offset = 2
+    receipt_offset = 4
+    names = sorted(list(vildleder.keys()))
+    for n, name in enumerate(names):
+        # Set names
+        c = sheet.cell(row=name_row, column=name_col+n*len(PAYMENT_METHODS))
+        c.value = name
+        for m, method in enumerate(PAYMENT_METHODS):
+            # Set payment methods
+            c = sheet.cell(row=name_row+method_offset,
+                           column=name_col+n*len(PAYMENT_METHODS)+m)
+            c.value = method
+
+            # Set total amount paid
+            c = sheet.cell(row=name_row+price_offset,
+                           column=name_col+n*len(PAYMENT_METHODS)+m)
+            c.value = vildleder[name][method]["beløb"]
+
+            # List receipts
+            receipts = vildleder[name][method]["kvitteringer"]
+            for i, receipt in enumerate(receipts):
+                c = sheet.cell(row=name_row+receipt_offset+i,
+                               column=name_col+n*len(PAYMENT_METHODS)+m)
+                c.value = receipt
+
+    # Set the "fucked receipts" title
+    sheet[f'A{name_row}'] = "Kvitteringer Med Fejl"
+
+    # Set column widths
+    def as_text(val): return str(val) if val is not None else ""
+    for column_cells in sheet.columns:
+        length = max(len(as_text(cell.value)) for cell in column_cells)
+        sheet.column_dimensions[openpyxl.utils.get_column_letter(
+                                column_cells[0].column)].width = length
+
+    # Set title
+    sheet['A1'] = sheet_name
+    f = openpyxl.styles.Font(size=18)
+    sheet['A1'].font = f
+    sheet.merge_cells("A1:D1")
 
 
 def main():
@@ -185,7 +243,10 @@ def main():
 
     vildleder = process_data(sheet)
 
-    pprint.pprint(vildleder)
+    populate_sheet(vildleder, wb)
+
+    # Finally, save the workbook
+    wb.save(WORKBOOK_NAME)
 
 
 if __name__ == '__main__':
