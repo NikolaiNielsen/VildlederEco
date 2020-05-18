@@ -1,6 +1,5 @@
 # VildlederEco
 
-Forfatter: Nikolai Nielsen (NikolaiNielsen@outlook.dk)
 Et script til at hjælpe med at gøre Vildlederøkonomien lidt nemmere:
 - Gennemgår alle arkene set i variablen "SHEETS", finder alle indtastninger, og
   laver en oversigt over, hvad hver person har udlagt, under hvilken kategori,
