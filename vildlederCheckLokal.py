@@ -12,9 +12,9 @@ Fremtidige forhåbninger:
 - Grafisk brugerflade til valg af fil
 
 BRUG AF DETTE PROGRAM
-- Programmet bruger pakker fra standardbiblioteket, samt "openpyxl", der skal
-  installeres separat, for eksempel gennem pip. Den er også inkluderet med
-  Anaconda distributionen.
+- Programmet bruger pakker fra standardbiblioteket, samt "openpyxl" (version
+  3.0.0), der skal installeres separat, for eksempel gennem pip. Den er også
+  inkluderet med Anaconda distributionen.
 - For at benytte dette program skal du have en lokal kopi af regnskabet i
   xlsx-format. Du skal ændre "WORKBOOK_NAME" til den relative sti til
   regnearket. Hvis regnearket er i samme mappe som dette program, kan du bare
